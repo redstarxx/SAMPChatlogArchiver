@@ -1,0 +1,9 @@
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\bin\Debug\SAMPChatlogArchiver.exe
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\bin\Debug\SAMPChatlogArchiver.pdb
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.csprojAssemblyReference.cache
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.ControlWindow.resources
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.Properties.Resources.resources
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.csproj.GenerateResource.cache
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.csproj.CoreCompileInputs.cache
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.exe
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Debug\SAMPChatlogArchiver.pdb
