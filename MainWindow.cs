@@ -23,7 +23,7 @@ namespace SAMPChatlogArchiver
 
         private static string logDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) 
             + @"\GTA San Andreas User Files\SAMP";
-        //private static string logDirectory = @"C:\Users\5novk\Documents\GTA San Andreas User Files\SAMP";
+
         bool logExist = Directory.Exists(logDirectory);
 
         RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
