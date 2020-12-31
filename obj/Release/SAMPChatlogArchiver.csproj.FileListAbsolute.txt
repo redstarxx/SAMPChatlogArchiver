@@ -7,3 +7,5 @@ C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Release\SAMPChatlogArchiver.
 C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Release\SAMPChatlogArchiver.csproj.CoreCompileInputs.cache
 C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Release\SAMPChatlogArchiver.exe
 C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Release\SAMPChatlogArchiver.pdb
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Release\Interop.IWshRuntimeLibrary.dll
+C:\Users\5novk\source\repos\SAMPChatlogArchiver\obj\Release\SAMPChatlogArchiver.csproj.ResolveComReference.cache

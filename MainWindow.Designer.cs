@@ -112,19 +112,19 @@
             // goToArchiveFolderToolStripMenuItem
             // 
             this.goToArchiveFolderToolStripMenuItem.Name = "goToArchiveFolderToolStripMenuItem";
-            this.goToArchiveFolderToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.goToArchiveFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.goToArchiveFolderToolStripMenuItem.Text = "Archive Folder";
             this.goToArchiveFolderToolStripMenuItem.Click += new System.EventHandler(this.goToArchiveFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(147, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -139,7 +139,7 @@
             // runAtStartupToolStripMenuItem
             // 
             this.runAtStartupToolStripMenuItem.Name = "runAtStartupToolStripMenuItem";
-            this.runAtStartupToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.runAtStartupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.runAtStartupToolStripMenuItem.Text = "Run at startup";
             this.runAtStartupToolStripMenuItem.Click += new System.EventHandler(this.runAtStartupToolStripMenuItem_Click);
             // 
@@ -189,7 +189,7 @@
             // gameProcessTimer
             // 
             this.gameProcessTimer.Enabled = true;
-            this.gameProcessTimer.Interval = 150;
+            this.gameProcessTimer.Interval = 200;
             this.gameProcessTimer.Tick += new System.EventHandler(this.gameProcessTimer_Tick);
             // 
             // notifyIcon1
@@ -287,6 +287,7 @@
             this.Text = "SA:MP Chatlog Archiver";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlWindow_FormClosing);
             this.Load += new System.EventHandler(this.ControlWindow_Load);
+            this.Shown += new System.EventHandler(this.ControlWindow_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
