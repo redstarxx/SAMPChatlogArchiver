@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Principal;
-using Microsoft.Win32;
+using IWshRuntimeLibrary;
 
 namespace SAMPChatlogArchiver
 {
@@ -26,10 +26,10 @@ namespace SAMPChatlogArchiver
 
         bool logExist = Directory.Exists(logDirectory);
 
-        RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        string previousLogContents = string.Empty;
 
         public ControlWindow()
-        {            
+        {
             InitializeComponent();
 
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -46,10 +46,14 @@ namespace SAMPChatlogArchiver
                 case true:
                     break;
                 case false:
-                    MessageBox.Show("SAMP directory does not exist. Please make sure the SAMP folder exists " +
+                    DialogResult result = MessageBox.Show("SAMP directory does not exist. Please make sure SAMP folder exists " +
                         @"in your Documents\GTA San Andreas User Files folder.", "Error", MessageBoxButtons.OK
                         , MessageBoxIcon.Information);
-                    Application.Exit();
+                    if (result == DialogResult.OK)
+                    {
+                        Application.Exit();
+                    }
+
                     break;
                 default:
                     break;
@@ -66,15 +70,31 @@ namespace SAMPChatlogArchiver
                     break;
             }
 
-            bool startupRegistry = rk.GetValueNames().Contains("SA:MP Chatlog Archiver");
+            bool startupShortcut = System.IO.File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) 
+                + @"\SAMPChatlogArchiver.lnk");
 
-            switch (startupRegistry)
+            switch (startupShortcut)
             {
                 case true:
                     runAtStartupToolStripMenuItem.Checked = true;
                     break;
                 case false:
                     runAtStartupToolStripMenuItem.Checked = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ControlWindow_Shown(object sender, EventArgs e)
+        {
+            switch (Program.launchOnStartup)
+            {
+                case true:
+                    this.Hide();
+                    this.Visible = false;
+                    break;
+                case false:
                     break;
                 default:
                     break;
@@ -155,49 +175,34 @@ namespace SAMPChatlogArchiver
                 StreamReader chatlogReader = new StreamReader(logDirectory + @"\chatlog.txt");
                 string toWrite = chatlogReader.ReadToEnd();
 
-                bool previousLogs = File.Exists(previousLogPath);
-                string previousLogContents;
-
-                switch (previousLogs)
+                // Prevents duplication
+                if (previousLogContents == toWrite)
                 {
-                    case true:
-                        previousLogContents = File.ReadAllText(previousLogPath);
-                        if (previousLogContents == toWrite)
-                        {
-                            return;
-                        }
-
-                        else
-                        {
-                            File.WriteAllText(previousLogPath, toWrite);
-                        }
-
-                        break;
-                    case false:
-                        File.WriteAllText(previousLogPath, toWrite);
-                        break;
-                    default:
-                        break;
+                    return;
                 }
 
-                //DateTime constructors
-                string currentDateTime = DateTime.Now.ToString("ddMMMyyyy hhmmtt");
-                currentDateTime = currentDateTime.ToUpperInvariant();
+                else
+                {
+                    //DateTime constructors
+                    string currentDateTime = DateTime.Now.ToString("ddMMMyyyy hhmmtt");
+                    currentDateTime = currentDateTime.ToUpperInvariant();
 
-                string chatlogFileName = currentDateTime + ".txt";
-                StreamWriter chatlogWriter = new StreamWriter(logDirectory + @"\archived chatlogs\" + chatlogFileName);
-                chatlogWriter.Write(toWrite);
+                    string chatlogFileName = currentDateTime + ".txt";
+                    StreamWriter chatlogWriter = new StreamWriter(logDirectory + @"\archived chatlogs\" + chatlogFileName);
+                    chatlogWriter.Write(toWrite);
+                    previousLogContents = toWrite;
 
-                LastSaveNameButton.Text = chatlogFileName;
-                LastSaveNameButton.Enabled = true;
+                    LastSaveNameButton.Text = chatlogFileName;
+                    LastSaveNameButton.Enabled = true;
 
-                chatlogReader.Dispose();
-                chatlogWriter.Dispose();
+                    chatlogReader.Dispose();
+                    chatlogWriter.Dispose();
+                }              
             }
 
             catch (Exception ex)
             {
-                MessageBox.Show("Error occured. Your chatlog.txt may not be inside SAMP folder." + Environment.NewLine
+                MessageBox.Show("Error occured. Your chatlog.txt may have been moved to another location." + Environment.NewLine
                     + "Exception details:\n" + Environment.NewLine + ex, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -244,7 +249,7 @@ namespace SAMPChatlogArchiver
         {
             MessageBox.Show("• Basic chatlog archiving system. \n• Added option to register app to startup registry key. \n• Added archive folder shortcut tab. " +
                 "\n• Added button to access recent saved logs faster."
-                + "\n 30/DEC/2020 - RedStar", "Changelog - v1.0", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                + "\n 30/DEC/2020 - RedStar", "Changelog - v1.0.0", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void archiveFolderToolStripMenuItem_Click(object sender, EventArgs e)
@@ -259,6 +264,8 @@ namespace SAMPChatlogArchiver
 
         private void runAtStartupToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string startupFolderDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+
             if (runAtStartupToolStripMenuItem.Checked == false)
             {
                 bool isElevated;
@@ -270,29 +277,33 @@ namespace SAMPChatlogArchiver
 
                 if (isElevated == false)
                 {
-                    MessageBox.Show("You must run this program as administrator to add it to the startup list.", "Error"
+                    MessageBox.Show("You must re-run this program as administrator to complete this.", "Error"
                         , MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
                 else if (isElevated == true)
-                {
-                    RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                    rk.SetValue("SA:MP Chatlog Archiver", Application.ExecutablePath);
+                {                   
+                    var shortcutShell = new WshShell();
 
-                    MessageBox.Show("Successfully added SA:MP Chatlog Archiver into startup registry key. " +
-                        "Make sure you have placed this app on a permanent location for it to work.", 
-                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var shortcut = shortcutShell.CreateShortcut(startupFolderDirectory + "\\" +
+                        Application.ProductName + ".lnk") as IWshShortcut;
+                    shortcut.TargetPath = Application.ExecutablePath;
+                    shortcut.WorkingDirectory = Application.StartupPath;
+                    shortcut.Arguments = "startup";
+                    shortcut.Save();
+
+                    MessageBox.Show("Successfully added SA:MP Chatlog Archiver to startup list.", 
+                        "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     runAtStartupToolStripMenuItem.Checked = true;
                 }
             }
 
             else if (runAtStartupToolStripMenuItem.Checked == true)
             {
-                RegistryKey rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                rk.DeleteValue("SA:MP Chatlog Archiver", false);
+                System.IO.File.Delete(startupFolderDirectory + @"\SAMPChatlogArchiver.lnk");
 
-                MessageBox.Show("Successfully removed SA:MP Chatlog Archiver from startup registry list.", 
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Successfully removed SA:MP Chatlog Archiver from startup list.", 
+                    "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 runAtStartupToolStripMenuItem.Checked = false;
             }
         }
