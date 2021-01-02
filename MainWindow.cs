@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
@@ -16,14 +11,11 @@ namespace SAMPChatlogArchiver
     public partial class ControlWindow : Form
     {
         private static string archiveDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-            + @"\GTA San Andreas User Files\SAMP\archived chatlogs";
+            + @"\GTA San Andreas User Files\SAMP\archived chatlogs\";
         bool directoryExist = Directory.Exists(archiveDirectory);
-
-        string previousLogPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\chatlog.txt";
 
         private static string logDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) 
             + @"\GTA San Andreas User Files\SAMP";
-
         bool logExist = Directory.Exists(logDirectory);
 
         string previousLogContents = string.Empty;
@@ -47,8 +39,8 @@ namespace SAMPChatlogArchiver
                     break;
                 case false:
                     DialogResult result = MessageBox.Show("SAMP directory does not exist. Please make sure SAMP folder exists " +
-                        @"in your Documents\GTA San Andreas User Files folder.", "Error", MessageBoxButtons.OK
-                        , MessageBoxIcon.Information);
+                        @"in your Documents\GTA San Andreas User Files folder. Application will exit to prevent unwanted errors.", 
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (result == DialogResult.OK)
                     {
                         Application.Exit();
@@ -188,7 +180,7 @@ namespace SAMPChatlogArchiver
                     currentDateTime = currentDateTime.ToUpperInvariant();
 
                     string chatlogFileName = currentDateTime + ".txt";
-                    StreamWriter chatlogWriter = new StreamWriter(logDirectory + @"\archived chatlogs\" + chatlogFileName);
+                    StreamWriter chatlogWriter = new StreamWriter(archiveDirectory + chatlogFileName);
                     chatlogWriter.Write(toWrite);
                     previousLogContents = toWrite;
 
@@ -211,7 +203,7 @@ namespace SAMPChatlogArchiver
         {
             try
             {
-                Process.Start(archiveDirectory + @"\" + LastSaveNameButton.Text.ToString());
+                Process.Start(archiveDirectory + LastSaveNameButton.Text);
             }
 
             catch (Exception ex)
@@ -247,9 +239,10 @@ namespace SAMPChatlogArchiver
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("• Basic chatlog archiving system. \n• Added option to register app to startup registry key. \n• Added archive folder shortcut tab. " +
-                "\n• Added button to access recent saved logs faster."
-                + "\n 30/DEC/2020 - RedStar", "Changelog - v1.0.0", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("• Anti-duplication archiving code now should work. \n• Upon selecting the \"Run at startup\" " +
+                "option in Settings, a shortcut would be created in Startup folder instead of creating a new registry key. " +
+                "\n• The app will now immediately minimizes to tray upon starting on startup."
+                + "\n 01/JAN/2021 - RedStar", "Changelog - v1.0.1", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void archiveFolderToolStripMenuItem_Click(object sender, EventArgs e)
