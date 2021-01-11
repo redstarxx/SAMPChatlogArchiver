@@ -157,6 +157,12 @@ namespace SAMPChatlogArchiver
 
                     WriteChatlog();
                 }
+
+                else if (gameProcess.Length > 0 == false && enableArchiving == false)
+                {
+                    tickGameNotActive = 0;
+                    tickGameProcess = 0;
+                }
             }
         }
 
@@ -239,10 +245,9 @@ namespace SAMPChatlogArchiver
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("• Anti-duplication archiving code now should work. \n• Upon selecting the \"Run at startup\" " +
-                "option in Settings, a shortcut would be created in Startup folder instead of creating a new registry key. " +
-                "\n• The app will now immediately minimizes to tray upon starting on startup."
-                + "\n 01/JAN/2021 - RedStar", "Changelog - v1.0.1", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("• Fixed a bug where chatlog.txt would be archived when the game process has terminated and the archiver " +
+                "is enabled after left disabled. " + "\n• Code optimization." +
+                "\n 11/JAN/2021 - RedStar", "Changelog - v1.0.1b", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void archiveFolderToolStripMenuItem_Click(object sender, EventArgs e)
